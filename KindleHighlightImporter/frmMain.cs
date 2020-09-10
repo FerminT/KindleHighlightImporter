@@ -20,25 +20,17 @@ namespace KindleHighlightImporter
             string file_path   = txtFrom.Text;
             string output_file = txtTo.Text;
             int lastLineRead   = Int32.Parse(ConfigurationManager.AppSettings["lastLineRead"]);
+            string[] myClippings = File.ReadAllLines(file_path);
 
-            try
-            {
-                string[] myClippings = File.ReadAllLines(file_path);
+            List<Book> books = ClippingsParser.Parse(myClippings, lastLineRead);
 
-                List<Book> books = ClippingsParser.Parse(myClippings, lastLineRead);
+            ENEXWriter.WriteToFile(books, output_file);
 
-                ENEXWriter.WriteToFile(books, output_file);
+            ConfigManager.UpdateAttribute("lastLineRead", myClippings.Length.ToString());
+            ConfigManager.UpdateAttribute("inputFile", txtFrom.Text);
+            ConfigManager.UpdateAttribute("outputFile", txtTo.Text);
 
-                ConfigManager.UpdateAttribute("lastLineRead", myClippings.Length.ToString());
-                ConfigManager.UpdateAttribute("inputFile", txtFrom.Text);
-                ConfigManager.UpdateAttribute("outputFile", txtTo.Text);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-            MessageBox.Show("Import has been successful.", "Kindle Highlight Importer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Import was successful.", "Kindle Highlight Importer", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             Application.Exit();
         }

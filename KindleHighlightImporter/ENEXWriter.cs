@@ -36,9 +36,9 @@ namespace KindleHighlightImporter
                 xmlWriter.WriteStartElement("ul");
 
                 // Los ordeno según su ubicación
-                b.sortHighlights();
+                b.SortHighlights();
                 // Cada highlight es un bullet de una lista
-                foreach (Highlight h in b.highlights)
+                foreach (Highlight h in b.Highlights)
                 {
                     xmlWriter.WriteStartElement("li");
                     xmlWriter.WriteStartElement("div");

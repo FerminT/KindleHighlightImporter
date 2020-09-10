@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace KindleHighlightImporter
 {
@@ -10,39 +11,47 @@ namespace KindleHighlightImporter
     {
         public string Title { get; }
         public string Author { get; }
-        public List<Highlight> highlights { get; }
+        public List<Highlight> Highlights { get; }
 
         public Book (string title, string author)
         {
             Title = title;
             Author = author;
-            highlights = new List<Highlight>();
+            Highlights = new List<Highlight>();
         }
 
-        public void addHighlight (Highlight newHighlight)
+        public void AddHighlight (Highlight newHighlight)
         {
-            checkForDuplicateHighlights(newHighlight);
-            highlights.Add(newHighlight);
+            CheckForDuplicateHighlights(newHighlight);
+            Highlights.Add(newHighlight);
         }
 
-        public void sortHighlights()
+        public void SortHighlights()
         {
-            highlights.Sort();
+            Highlights.Sort();
         }
 
-        private void checkForDuplicateHighlights (Highlight newHighlight)
+        private void CheckForDuplicateHighlights (Highlight newHighlight)
         {
-            // Si ya tengo un highlight que es prefijo del highlight a agregar, lo considero un duplicado y lo elimino
-            foreach (Highlight h in highlights.ToList())
+            try
             {
-                if (newHighlight.Text.StartsWith(h.Text))
-                    highlights.Remove(h);
+                // Si ya tengo un highlight que es prefijo del highlight a agregar, lo considero un duplicado y lo elimino
+                foreach (Highlight h in Highlights.ToList())
+                {
+                    if (newHighlight.Text.StartsWith(h.Text))
+                        Highlights.Remove(h);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fatal al buscar highlights duplicados: " + ex.Message);
+                Application.Exit();
             }
         }
 
         public bool Equals (Book b)
         {
-            if (Object.ReferenceEquals(b, null))
+            if (b is null)
             {
                 return false;
             }
@@ -68,9 +77,9 @@ namespace KindleHighlightImporter
         public static bool operator == (Book b1, Book b2)
         {
             // Check for null on left side.
-            if (Object.ReferenceEquals(b1, null))
+            if (b1 is null)
             {
-                if (Object.ReferenceEquals(b2, null))
+                if (b2 is null)
                 {
                     // null == null = true.
                     return true;
@@ -103,7 +112,7 @@ namespace KindleHighlightImporter
             return Title + " (" + Author + ")";
         }
     }
-    public class Highlight
+    public class Highlight : IComparable<Highlight>
     {
         public string Text { get; }
         public string Date { get; }
@@ -121,76 +130,35 @@ namespace KindleHighlightImporter
             return Text + " (" + Location + ") (" + Date + ")";
         }
 
-        public bool Equals(Highlight h)
+        public int CompareTo(Highlight h)
         {
-            if (Object.ReferenceEquals(h, null))
+            if (this > h)
             {
-                return false;
+                return 1;
             }
-            if (Object.ReferenceEquals(this, h))
+            else if (this < h)
             {
-                return true;
+                return -1;
             }
-
-            // If run-time types are not exactly the same, return false.
-            if (this.GetType() != h.GetType())
+            else
             {
-                return false;
+                return 0;
             }
-
-            return (Text == h.Text && Location == h.Location && Date == h.Date);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as Highlight);
-        }
-
-
-        public static bool operator ==(Highlight h1, Highlight h2)
-        {
-            // Check for null on left side.
-            if (Object.ReferenceEquals(h1, null))
-            {
-                if (Object.ReferenceEquals(h2, null))
-                {
-                    // null == null = true.
-                    return true;
-                }
-
-                // Only the left side is null.
-                return false;
-            }
-            // Equals handles case of null on right side.
-            return h1.Equals(h2);
-        }
-
-        public static bool operator !=(Highlight h1, Highlight h2)
-        {
-            return !(h1 == h2);
         }
 
         public static bool operator <(Highlight h1, Highlight h2)
         {
             char[] locationDelimiters = { ' ', '-' };
             int location_h1 = Int32.Parse(h1.Location.Split(locationDelimiters)[1]);
-            int location_h2 = Int32.Parse(h1.Location.Split(locationDelimiters)[1]);
+            int location_h2 = Int32.Parse(h2.Location.Split(locationDelimiters)[1]);
             return (location_h1 < location_h2);
         }
         public static bool operator >(Highlight h1, Highlight h2)
         {
             char[] locationDelimiters = { ' ', '-' };
             int location_h1 = Int32.Parse(h1.Location.Split(locationDelimiters)[1]);
-            int location_h2 = Int32.Parse(h1.Location.Split(locationDelimiters)[1]);
+            int location_h2 = Int32.Parse(h2.Location.Split(locationDelimiters)[1]);
             return (location_h1 > location_h2);
-        }
-        public static bool operator >=(Highlight h1, Highlight h2)
-        {
-            return !(h1 < h2);
-        }
-        public static bool operator <=(Highlight h1, Highlight h2)
-        {
-            return !(h1 > h2);
         }
 
         public override int GetHashCode()

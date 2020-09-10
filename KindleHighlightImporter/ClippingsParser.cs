@@ -13,7 +13,7 @@ namespace KindleHighlightImporter
                 DialogResult result = MessageBox.Show("The file to import has less lines than the last time it was imported. Import from scratch?", "Change in My Clippings", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    lastLineRead = 1;
+                    lastLineRead = 0;
                 }
                 else
                 {
@@ -23,7 +23,7 @@ namespace KindleHighlightImporter
             // Hago un preprocesamiento para obtener los libros a procesar
             List<Book> books = new List<Book>();
             int count = 0;
-            int index = lastLineRead - 1;
+            int index = lastLineRead;
 
             while (index < myClippings.Length)
             {
@@ -31,7 +31,7 @@ namespace KindleHighlightImporter
                 count = count % 5;
                 if (count == 0 && line != String.Empty)
                 {
-                    Book currentBook = getBookFromLine(line);
+                    Book currentBook = GetBookFromLine(line);
                     if (!books.Contains(currentBook))
                         books.Add(currentBook);
                 }
@@ -52,15 +52,15 @@ namespace KindleHighlightImporter
                 {
                     count = count % 5;
                     if (count == 0 && line != String.Empty)
-                        isSameBook = (currentBook == getBookFromLine(line));
+                        isSameBook = currentBook == GetBookFromLine(line);
 
                     if (isSameBook)
                     {
                         if (count == 1)
                         {
                             // Obtengo metadata del highlight
-                            date     = getMetadataFromLine(line).date;
-                            location = getMetadataFromLine(line).location;
+                            date     = GetMetadataFromLine(line).date;
+                            location = GetMetadataFromLine(line).location;
                         }
 
                         if (count == 2)
@@ -73,7 +73,7 @@ namespace KindleHighlightImporter
                             // Obtengo el highlight y lo guardo en el libro
                             text = line;
                             if (text.Length > 0)
-                                currentBook.addHighlight(new Highlight(text, date, location));
+                                currentBook.AddHighlight(new Highlight(text, date, location));
                         }
                     }
                     count++;
@@ -82,34 +82,54 @@ namespace KindleHighlightImporter
             return books;
         }
 
-        private static Book getBookFromLine (string line)
+        private static Book GetBookFromLine (string line)
         {
-            char[] delimiterChars_header = { '(', ')' };
-            string[] words_header = line.Split(delimiterChars_header);
-            string title = words_header[0].Trim(' ');
-            string author = words_header[words_header.Length - 2];
+            string title = String.Empty;
+            string author = String.Empty;
+            try
+            {
+                char[] delimiterChars_header = { '(', ')' };
+                string[] words_header = line.Split(delimiterChars_header);
+                title = words_header[0].Trim(' ');
+                author = words_header[words_header.Length - 2];
 
-            // Reemplazo las comas, ya que divide los tags en Evernote
-            author = author.Replace(",", " -");
+                // Reemplazo las comas, ya que divide los tags en Evernote
+                author = author.Replace(",", " -");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fatal al parsear un título: " + ex.Message);
+                Application.Exit();
+            }
 
             return new Book (title, author);
         }
 
-        private static (string date, string location) getMetadataFromLine (string line)
+        private static (string date, string location) GetMetadataFromLine (string line)
         {
-            char[] delimiterChars_metadata = { '|' };
-            string[] words_metadata = line.Split(delimiterChars_metadata);
+            string date = String.Empty;
+            string location = String.Empty;
+            try
+            {
+                char[] delimiterChars_metadata = { '|' };
+                string[] words_metadata = line.Split(delimiterChars_metadata);
 
-            // Fecha
-            char[] delimiterChars_date = { ',' };
-            string date = words_metadata[words_metadata.Length - 1];
-            string[] date_components = date.Split(delimiterChars_date);
-            date = date_components[1].Trim(' ') + "," + date_components[2] + "," + date_components[3];
+                // Fecha
+                char[] delimiterChars_date = { ',' };
+                date = words_metadata[words_metadata.Length - 1];
+                string[] date_components = date.Split(delimiterChars_date);
+                date = date_components[1].Trim(' ') + "," + date_components[2] + "," + date_components[3];
 
-            // Ubicación
-            string[] words_location = words_metadata[0].Trim(' ').Split(' ');
-            int len_location = words_location.Length;
-            string location = words_location[len_location - 2] + ' ' + words_location[len_location - 1];
+                // Ubicación
+                string[] words_location = words_metadata[0].Trim(' ').Split(' ');
+                int len_location = words_location.Length;
+                location = words_location[len_location - 2] + ' ' + words_location[len_location - 1];
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error fatal al obtener la metadata del highlight: " + ex.Message);
+                Application.Exit();
+            }
 
             return (date, location);
         }
