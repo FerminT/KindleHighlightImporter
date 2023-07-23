@@ -120,9 +120,22 @@ namespace KindleHighlightImporter
 
         public Highlight(string text, string date, string location)
         {
-            Text = text;
+            Text = RemoveComparables(text);
             Date = date;
             Location = location;
+        }
+
+        private string RemoveComparables(string text)
+        {
+            if (text.Contains("<")){
+                text = text.Replace("<", "less than ");
+            }
+            if (text.Contains(">"))
+            {
+                text = text.Replace(">", "greater than ");
+            }
+
+            return text;
         }
 
         public override string ToString()
