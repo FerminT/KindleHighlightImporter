@@ -3,20 +3,22 @@ using System.Configuration;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
+using VersOne.Epub;
 
 namespace KindleHighlightImporter
 {
-    public partial class frmMain : Form
+    public partial class FrmMain : Form
     {
-        public frmMain()
+        public FrmMain()
         {
             InitializeComponent();
             txtFrom.Text = ConfigManager.GetAttribute("inputFile");
             txtTo.Text   = ConfigManager.GetAttribute("outputFile");
         }
 
-        private void btnImport_Click(object sender, EventArgs e)
+        private void BtnImport_Click(object sender, EventArgs e)
         {
+            // EpubBook book = EpubReader.ReadBook("E:\\Documents\\OneDrive - UBA\\eBooks\\Popular Science\\Behave, The Biology of Humans at Our Best and Worst - Robert M. Sapolsky (2017).epub");
             string file_path   = txtFrom.Text;
             string output_file = txtTo.Text;
             int lastLineRead   = Int32.Parse(ConfigurationManager.AppSettings["lastLineRead"]);

@@ -28,7 +28,7 @@ namespace KindleHighlightImporter
             while (index < myClippings.Length)
             {
                 string line = myClippings[index];
-                count = count % 5;
+                count %= 5;
                 if (count == 0 && line != String.Empty)
                 {
                     Book currentBook = GetBookFromLine(line);
@@ -50,7 +50,7 @@ namespace KindleHighlightImporter
                 // Recorro My Clippings.txt y me quedo con aquellos highlights que pertenezcan al libro actual
                 foreach (string line in myClippings)
                 {
-                    count = count % 5;
+                    count %= 5;
                     if (count == 0 && line != String.Empty)
                         isSameBook = currentBook == GetBookFromLine(line);
 

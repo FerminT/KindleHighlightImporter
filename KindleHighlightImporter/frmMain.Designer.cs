@@ -1,6 +1,6 @@
 ﻿namespace KindleHighlightImporter
 {
-    partial class frmMain
+    partial class FrmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -75,7 +75,7 @@
             this.btnImport.TabIndex = 4;
             this.btnImport.Text = "Start Import";
             this.btnImport.UseVisualStyleBackColor = true;
-            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            this.btnImport.Click += new System.EventHandler(this.BtnImport_Click);
             // 
             // frmMain
             // 
