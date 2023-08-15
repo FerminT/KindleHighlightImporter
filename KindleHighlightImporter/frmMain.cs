@@ -14,6 +14,7 @@ namespace KindleHighlightImporter
             InitializeComponent();
             txtFrom.Text = ConfigManager.GetAttribute("inputFile");
             txtTo.Text   = ConfigManager.GetAttribute("outputFile");
+            txtEpubDir.Text = ConfigManager.GetAttribute("epubDir");
         }
 
         private void BtnImport_Click(object sender, EventArgs e)
