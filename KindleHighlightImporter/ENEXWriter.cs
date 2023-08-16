@@ -14,7 +14,7 @@ namespace KindleHighlightImporter
 
             // Escribo encabezado
             xmlWriter.WriteStartElement("en-export");
-            xmlWriter.WriteAttributeString("export-date", getCurrentDate());
+            xmlWriter.WriteAttributeString("export-date", GetCurrentDate());
             xmlWriter.WriteAttributeString("application", "Evernote/Windows");
             xmlWriter.WriteAttributeString("version", "6.x");
 
@@ -85,7 +85,7 @@ namespace KindleHighlightImporter
             xmlWriter.Close();
         }
 
-        private static string getCurrentDate()
+        private static string GetCurrentDate()
         {
             // Formato: yyyymmddThhmmssZ
             string date = DateTime.UtcNow.ToString("s");

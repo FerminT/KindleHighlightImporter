@@ -23,6 +23,7 @@ namespace KindleHighlightImporter
             string file_path   = txtFrom.Text;
             string output_file = txtTo.Text;
             int lastLineRead   = Int32.Parse(ConfigurationManager.AppSettings["lastLineRead"]);
+            IDictionary<string, EpubBook> epubBooks = GetAllBooks(txtEpubDir.Text);
             string[] myClippings = File.ReadAllLines(file_path);
 
             List<Book> books = ClippingsParser.Parse(myClippings, lastLineRead);
@@ -36,6 +37,38 @@ namespace KindleHighlightImporter
             MessageBox.Show("Import was successful.", "Kindle Highlight Importer", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             Application.Exit();
+        }
+
+        private IDictionary<string, EpubBook> GetAllBooks(string dir)
+        {
+            if (!Directory.Exists(dir))
+            {
+                MessageBox.Show("Invalid path for epub books");
+                Application.Exit();
+            }
+
+            IDictionary<string, EpubBook> epubBooks = new Dictionary<string, EpubBook>();
+            string[] files = Directory.GetFileSystemEntries(dir);
+            LookForBooks(files, epubBooks);
+
+            return epubBooks;
+        }
+
+        private void LookForBooks(string[] files, IDictionary<string, EpubBook> epubBooks)
+        {
+            foreach (string fileName in files)
+            {
+                if (File.Exists(fileName) && Path.GetExtension(fileName) == ".epub")
+                {
+                    EpubBook book = EpubReader.ReadBook(fileName);
+                    epubBooks.Add(book.Title, book);
+                }
+                else if (Directory.Exists(fileName))
+                {
+                    files = Directory.GetFileSystemEntries(fileName);
+                    LookForBooks(files, epubBooks);
+                }
+            }
         }
     }
 }
