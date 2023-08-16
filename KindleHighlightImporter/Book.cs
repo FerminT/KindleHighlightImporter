@@ -9,12 +9,14 @@ namespace KindleHighlightImporter
     {
         public string Title { get; }
         public string Author { get; }
+        public List<Chapter> Chapters { get; }
         public List<Highlight> Highlights { get; }
 
         public Book (string title, string author)
         {
             Title = title;
             Author = author;
+            Chapters = new List<Chapter>();
             Highlights = new List<Highlight>();
         }
 
@@ -74,16 +76,12 @@ namespace KindleHighlightImporter
 
         public static bool operator == (Book b1, Book b2)
         {
-            // Check for null on left side.
             if (b1 is null)
             {
                 if (b2 is null)
                 {
-                    // null == null = true.
                     return true;
                 }
-
-                // Only the left side is null.
                 return false;
             }
             // Equals handles case of null on right side.
@@ -110,6 +108,21 @@ namespace KindleHighlightImporter
             return Title + " (" + Author + ")";
         }
     }
+
+    public class Chapter
+    {
+        public string Title { get; }
+        public Chapter Subchapter { get; }
+        public List<Highlight> Highlights { get; }
+        
+        public Chapter(string chapterTitle)
+        {
+            Title = chapterTitle;
+            Subchapter = null;
+            Highlights = new List<Highlight>();
+        }
+    }
+
     public class Highlight : IComparable<Highlight>
     {
         public string Text { get; }
