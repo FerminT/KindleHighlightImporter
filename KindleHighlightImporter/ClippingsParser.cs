@@ -23,46 +23,39 @@ namespace KindleHighlightImporter
             List<Book> books = LoadBooks(myClippings, lastLineRead);
 
             foreach (Book currentBook in books)
-            {
-                int count = 0;
-                bool isSameBook = false;
-                string date = String.Empty;
-                string location = String.Empty;
-                string text = String.Empty;
+                LoadHighlights(currentBook, myClippings);
 
-                // Recorro My Clippings.txt y me quedo con aquellos highlights que pertenezcan al libro actual
-                foreach (string line in myClippings)
-                {
-                    count %= 5;
-                    if (count == 0 && line != String.Empty)
-                        isSameBook = currentBook == GetBookFromLine(line);
-
-                    if (isSameBook)
-                    {
-                        if (count == 1)
-                        {
-                            // Obtengo metadata del highlight
-                            date     = GetMetadataFromLine(line).date;
-                            location = GetMetadataFromLine(line).location;
-                        }
-
-                        if (count == 2)
-                        {
-                            // Salteo espacio en blanco
-                        }
-
-                        if (count == 3)
-                        {
-                            // Obtengo el highlight y lo guardo en el libro
-                            text = line;
-                            if (text.Length > 0)
-                                currentBook.AddHighlight(new Highlight(text, date, location));
-                        }
-                    }
-                    count++;
-                }
-            }
             return books;
+        }
+
+        private static void LoadHighlights(Book currentBook, string[] myClippings)
+        {
+            int count = 0;
+            string date = String.Empty;
+            string location = String.Empty;
+            bool isSameBook = false;
+            foreach (string line in myClippings)
+            {
+                count %= 5;
+                if (count == 0 && line != String.Empty)
+                    isSameBook = currentBook == GetBookFromLine(line);
+
+                if (isSameBook)
+                {
+                    if (count == 1)
+                    {
+                        date = GetMetadataFromLine(line).date;
+                        location = GetMetadataFromLine(line).location;
+                    }
+                    else if (count == 3)
+                    {
+                        string text = line;
+                        if (text.Length > 0)
+                            currentBook.AddHighlight(new Highlight(text, date, location));
+                    }
+                }
+                count++;
+            }
         }
 
         private static List<Book> LoadBooks(string[] myClippings, int index)
@@ -86,7 +79,7 @@ namespace KindleHighlightImporter
             return books;
         }
 
-        private static Book GetBookFromLine (string line)
+        private static Book GetBookFromLine(string line)
         {
             string title = String.Empty;
             string author = String.Empty;
@@ -97,19 +90,19 @@ namespace KindleHighlightImporter
                 title = words_header[0].Trim(' ');
                 author = words_header[words_header.Length - 2];
 
-                // Reemplazo las comas, ya que divide los tags en Evernote
+                // Replaces commas, as they divide tags in Evernote
                 author = author.Replace(",", " -");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error fatal al parsear un título: " + ex.Message);
+                MessageBox.Show("Fatal error while parsing title: " + ex.Message);
                 Application.Exit();
             }
 
             return new Book (title, author);
         }
 
-        private static (string date, string location) GetMetadataFromLine (string line)
+        private static (string date, string location) GetMetadataFromLine(string line)
         {
             string date = String.Empty;
             string location = String.Empty;
@@ -118,20 +111,20 @@ namespace KindleHighlightImporter
                 char[] delimiterChars_metadata = { '|' };
                 string[] words_metadata = line.Split(delimiterChars_metadata);
 
-                // Fecha
+                // Date
                 char[] delimiterChars_date = { ',' };
                 date = words_metadata[words_metadata.Length - 1];
                 string[] date_components = date.Split(delimiterChars_date);
                 date = date_components[1].Trim(' ') + "," + date_components[2] + "," + date_components[3];
 
-                // Ubicación
+                // Location
                 string[] words_location = words_metadata[0].Trim(' ').Split(' ');
                 int len_location = words_location.Length;
                 location = words_location[len_location - 2] + ' ' + words_location[len_location - 1];
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error fatal al obtener la metadata del highlight: " + ex.Message);
+                MessageBox.Show("Fatal error while getting metadata from highlight: " + ex.Message);
                 Application.Exit();
             }
 
