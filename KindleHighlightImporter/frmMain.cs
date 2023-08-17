@@ -19,7 +19,6 @@ namespace KindleHighlightImporter
 
         private void BtnImport_Click(object sender, EventArgs e)
         {
-            // EpubBook book = EpubReader.ReadBook("E:\\Documents\\OneDrive - UBA\\eBooks\\Popular Science\\Behave, The Biology of Humans at Our Best and Worst - Robert M. Sapolsky (2017).epub");
             string file_path   = txtFrom.Text;
             string output_file = txtTo.Text;
             int lastLineRead   = Int32.Parse(ConfigurationManager.AppSettings["lastLineRead"]);
