@@ -7,6 +7,10 @@ namespace KindleHighlightImporter
 {
     public static class EpubManager
     {
+        public static void DivideInChapters(List<Book> books, IDictionary<string, EpubBook> epubBooks)
+        {
+            throw new System.NotImplementedException();
+        }
         public static IDictionary<string, EpubBook> GetAllBooks(string dir)
         {
             if (!Directory.Exists(dir))

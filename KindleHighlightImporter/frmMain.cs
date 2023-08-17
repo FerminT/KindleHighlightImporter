@@ -26,7 +26,7 @@ namespace KindleHighlightImporter
             string[] myClippings = File.ReadAllLines(file_path);
 
             List<Book> books = ClippingsParser.Parse(myClippings, lastLineRead);
-
+            EpubManager.DivideInChapters(books, epubBooks);
             ENEXWriter.WriteToFile(books, output_file);
 
             ConfigManager.UpdateAttribute("lastLineRead", myClippings.Length.ToString());
