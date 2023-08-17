@@ -20,28 +20,11 @@ namespace KindleHighlightImporter
                     Application.Exit();
                 }
             }
-            // Hago un preprocesamiento para obtener los libros a procesar
-            List<Book> books = new List<Book>();
-            int count = 0;
-            int index = lastLineRead;
-
-            while (index < myClippings.Length)
-            {
-                string line = myClippings[index];
-                count %= 5;
-                if (count == 0 && line != String.Empty)
-                {
-                    Book currentBook = GetBookFromLine(line);
-                    if (!books.Contains(currentBook))
-                        books.Add(currentBook);
-                }
-                count++;
-                index++;
-            }
+            List<Book> books = LoadBooks(myClippings, lastLineRead);
 
             foreach (Book currentBook in books)
             {
-                count = 0;
+                int count = 0;
                 bool isSameBook = false;
                 string date = String.Empty;
                 string location = String.Empty;
@@ -79,6 +62,27 @@ namespace KindleHighlightImporter
                     count++;
                 }
             }
+            return books;
+        }
+
+        private static List<Book> LoadBooks(string[] myClippings, int index)
+        {
+            List<Book> books = new List<Book>();
+            int count = 0;
+            while (index < myClippings.Length)
+            {
+                string line = myClippings[index];
+                count %= 5;
+                if (count == 0 && line != String.Empty)
+                {
+                    Book currentBook = GetBookFromLine(line);
+                    if (!books.Contains(currentBook))
+                        books.Add(currentBook);
+                }
+                count++;
+                index++;
+            }
+
             return books;
         }
 
