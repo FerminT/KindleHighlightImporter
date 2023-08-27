@@ -9,6 +9,25 @@ namespace KindleHighlightImporter
     {
         public static void DivideInChapters(List<Book> books, IDictionary<string, EpubBook> epubBooks)
         {
+            foreach (Book b in books)
+            {
+                string bookTitle = b.Title;
+                if (!epubBooks.ContainsKey(bookTitle))
+                {
+                    MessageBox.Show("Could not find epub file for book " + bookTitle);
+                    continue;
+                }
+                EpubBook epubBook = epubBooks[bookTitle];
+                List<Highlight> highlights = b.Highlights;
+                highlights.Sort();
+
+                Chapter chapter = null;
+                bool newChapter = false;
+                foreach (Highlight h in highlights)
+                {
+
+                }
+            }
             throw new System.NotImplementedException();
         }
         public static IDictionary<string, EpubBook> GetAllBooks(string dir)

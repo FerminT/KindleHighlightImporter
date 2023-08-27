@@ -12,7 +12,7 @@ namespace KindleHighlightImporter
         public List<Chapter> Chapters { get; }
         public List<Highlight> Highlights { get; }
 
-        public Book (string title, string author)
+        public Book(string title, string author)
         {
             Title = title;
             Author = author;
@@ -20,7 +20,12 @@ namespace KindleHighlightImporter
             Highlights = new List<Highlight>();
         }
 
-        public void AddHighlight (Highlight newHighlight)
+        public void AddChapter(Chapter newChapter)
+        {
+            Chapters.Add(newChapter);
+        }
+
+        public void AddHighlight(Highlight newHighlight)
         {
             CheckForDuplicateHighlights(newHighlight);
             Highlights.Add(newHighlight);
@@ -31,7 +36,7 @@ namespace KindleHighlightImporter
             Highlights.Sort();
         }
 
-        private void CheckForDuplicateHighlights (Highlight newHighlight)
+        private void CheckForDuplicateHighlights(Highlight newHighlight)
         {
             try
             {
@@ -49,7 +54,7 @@ namespace KindleHighlightImporter
             }
         }
 
-        public bool Equals (Book b)
+        public bool Equals(Book b)
         {
             if (b is null)
             {
@@ -69,7 +74,7 @@ namespace KindleHighlightImporter
             return (Author == b.Author && Title == b.Title);
         }
 
-        public override bool Equals (object obj)
+        public override bool Equals(object obj)
         {
             return this.Equals(obj as Book);
         }

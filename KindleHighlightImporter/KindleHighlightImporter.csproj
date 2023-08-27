@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Book.cs" />
+    <Compile Include="EpubManager.cs" />
     <Compile Include="ConfigManager.cs" />
     <Compile Include="ENEXWriter.cs" />
     <Compile Include="ClippingsParser.cs" />

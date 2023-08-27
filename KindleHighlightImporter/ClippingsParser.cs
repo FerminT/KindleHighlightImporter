@@ -6,7 +6,7 @@ namespace KindleHighlightImporter
 {
     public static class ClippingsParser
     {
-        public static List<Book> Parse (string[] myClippings, int lastLineRead)
+        public static List<Book> Parse(string[] myClippings, int lastLineRead)
         {
             if (myClippings.Length <= lastLineRead)
             {
